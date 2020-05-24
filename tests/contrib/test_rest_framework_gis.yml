@@ -1,0 +1,142 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /x/:
+    get:
+      operationId: x_list
+      description: ''
+      tags:
+      - x
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/X'
+          description: ''
+components:
+  schemas:
+    GeoFeature:
+      type: object
+      properties:
+        type:
+          description: The type of the geos instance
+          type: string
+          enum:
+          - Feature
+        id:
+          type: integer
+        geometry:
+          $ref: '#/components/schemas/GeoGeometryCollection'
+        properties:
+          type: object
+      required:
+      - id
+      - type
+      - geometry
+    GeoFeatureCollection:
+      type: object
+      properties:
+        type:
+          description: The type of the geos instance
+          type: string
+          enum:
+          - Feature
+        id:
+          type: integer
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoFeature'
+      required:
+      - id
+      - type
+      - features
+    GeoGeometry:
+      type: object
+      properties:
+        type:
+          description: The type of the geos instance
+          type: string
+          enum:
+          - Point
+          - LineString
+          - LinearRing
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+        coordinates:
+          oneOf:
+          - $ref: '#/components/schemas/GeoPoint'
+          - type: array
+            items:
+              $ref: '#/components/schemas/GeoPoint'
+          - type: array
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/GeoPoint'
+          - type: array
+            items:
+              type: array
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GeoPoint'
+      required:
+      - type
+      - coordinates
+    GeoGeometryCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the geos instance
+          enum:
+          - GeometryCollection
+        geometries:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoGeometry'
+      required:
+      - type
+      - geometries
+    GeoPoint:
+      type: array
+      items:
+        type: number
+        format: float
+      minItems: 2
+      maxItems: 3
+    X:
+      type: object
+      properties:
+        location_method_field:
+          oneOf:
+          - $ref: '#/components/schemas/GeoFeature'
+          - $ref: '#/components/schemas/GeoFeatureCollection'
+          readOnly: true
+        location_field:
+          oneOf:
+          - $ref: '#/components/schemas/GeoGeometry'
+          - $ref: '#/components/schemas/GeoGeometryCollection'
+      required:
+      - location_field
+      - location_method_field
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: Session
