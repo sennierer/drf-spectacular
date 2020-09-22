@@ -80,7 +80,7 @@ class SpectacularSwaggerView(APIView):
 
     @extend_schema(exclude=True)
     def get(self, request, *args, **kwargs):
-        schema_url = self.url or request.build_absolute_uri(reverse(self.url_name, request=request)).replace('http', 'https')
+        schema_url = self.url or reverse(self.url_name, request=request)
         print(schema_url)
         print(request.headers)
         if request.GET.get('lang'):
