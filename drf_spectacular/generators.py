@@ -150,6 +150,7 @@ class SchemaGenerator(BaseSchemaGenerator):
                     continue
 
             # beware that every access to schema yields a fresh object (descriptor pattern)
+            print(path, path_regex, method, self.registry)
             operation = view.schema.get_operation(path, path_regex, method, self.registry)
 
             # operation was manually removed via @extend_schema
